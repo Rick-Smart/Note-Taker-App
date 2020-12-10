@@ -1,5 +1,6 @@
 const fs = require("fs");
 const uuid = require("uuid");
+const path = require("path");
 
 module.exports = function (app) {
   app.get("/api/notes", function (req, res) {
@@ -15,10 +16,11 @@ module.exports = function (app) {
     res.json(note);
   });
 
-  app.delete("/api/notes", function (req, res) {
+  app.delete("/api/notes/:id", function (req, res) {
     const note = JSON.parse(fs.readFileSync("./db/db.json"));
-    
+    const removeNote = note.filter((delNote) => delNote.id !== req.params.id);
 
-    res.json();
+    fs.writeFileSync("./db/db.json", JSON.stringify(removeNote));
+    res.json(removeNote);
   });
 };
